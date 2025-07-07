@@ -4,60 +4,38 @@ import '../viewmodels/emoji_view_model.dart';
 import '../models/emoji_category.dart';
 
 class EmojiGridView extends StatelessWidget {
-  final EmojiCategory category;
+  final List<String> emojis;
+  final Function(String) onEmojiTap;
 
-  const EmojiGridView({super.key, required this.category});
+  const EmojiGridView({
+    super.key,
+    required this.emojis,
+    required this.onEmojiTap,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = Provider.of<EmojiViewModel>(context);
-    final colorScheme = Theme.of(context).colorScheme;
-
     return GridView.builder(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(16.0),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 6,
         childAspectRatio: 1.0,
         crossAxisSpacing: 12,
         mainAxisSpacing: 12,
       ),
-      itemCount: category.emojis.length,
+      itemCount: emojis.length,
       itemBuilder: (context, index) {
-        final emoji = category.emojis[index];
-        final isSelected = viewModel.selectedEmoji == emoji && viewModel.copied;
-
-        return InkWell(
-          onTap: () => viewModel.copyEmoji(emoji),
-          borderRadius: BorderRadius.circular(16),
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            decoration: BoxDecoration(
-              color: isSelected
-                  ? colorScheme.primaryContainer
-                  : colorScheme.surfaceVariant.withOpacity(0.5),
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: isSelected
-                  ? [
-                      BoxShadow(
-                        color: colorScheme.primary.withOpacity(0.2),
-                        blurRadius: 8,
-                        offset: const Offset(0, 2),
-                      ),
-                    ]
-                  : null,
-            ),
+        final emoji = emojis[index];
+        return Card(
+          elevation: 2,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: InkWell(
+            onTap: () => onEmojiTap(emoji),
+            borderRadius: BorderRadius.circular(12),
             child: Center(
-              child: AnimatedScale(
-                scale: isSelected ? 1.2 : 1.0,
-                duration: const Duration(milliseconds: 200),
-                child: Text(
-                  emoji,
-                  style: TextStyle(
-                    fontSize: 28,
-                    color: isSelected ? colorScheme.onPrimaryContainer : null,
-                  ),
-                ),
-              ),
+              child: Text(emoji, style: const TextStyle(fontSize: 28)),
             ),
           ),
         );

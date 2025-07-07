@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'viewmodels/emoji_view_model.dart';
 import 'viewmodels/theme_view_model.dart';
 import 'views/emoji_home_page.dart';
+import 'services/clipboard_service.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,6 +29,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeViewModel = Provider.of<ThemeViewModel>(context);
+    final clipboardService = ClipboardService();
 
     return MaterialApp(
       title: '이모지 모음',
@@ -35,6 +37,7 @@ class MyApp extends StatelessWidget {
       theme: themeViewModel.lightTheme,
       darkTheme: themeViewModel.darkTheme,
       debugShowCheckedModeBanner: false,
+      navigatorKey: clipboardService.navigatorKey,
       home: const EmojiHomePage(title: '이모지 모음'),
     );
   }
